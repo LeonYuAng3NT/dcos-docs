@@ -75,7 +75,7 @@ An infrastructure network is a physical or virtual network provided by the infra
 
 #### <a name="dcos-virtual-network"></a>Virtual Network
 
-A DC/OS virtual network is specifically an virtual network internal to the cluster that connects DC/OS components and containerized tasks running on DC/OS.
+A DC/OS virtual network is specifically a virtual network internal to the cluster that connects DC/OS components and containerized tasks running on DC/OS.
 
 - The virtual network provided by DC/OS is VXLAN managed by the Virtual Network Service (Navstar).
 - Virtual networks must be configured by an administrator before being used by tasks.
@@ -209,7 +209,7 @@ A DC/OS scheduler is a Mesos scheduler that runs as a systemd service on master 
 - Some schedulers come pre-installed as DC/OS components (e.g. Marathon, Metronome).
 - Some schedulers can be installed by users as user services (e.g Kafka, Cassandra).
 - Some schedulers run as multiple service instances to provide high availability (e.g. Marathon).
-- In certain security modes within Enterprise DC/OS, a DC/OS scheduler must authenticate and be authorized using a service account in order to register with Mesos as a framework.
+- In certain security modes within Enterprise DC/OS, a DC/OS scheduler must authenticate and be authorized using a service account to register with Mesos as a framework.
 
 ### <a name="dcos-scheduler-service"></a>Scheduler Service
 
@@ -252,7 +252,7 @@ For more information, see the [Universe repository](https://github.com/mesospher
 
 ### <a name="cloud-template"></a>Cloud Template
 
-A cloud template is an infrastructure-specific method of decoratively describing a DC/OS cluster.
+A cloud template is an infrastructure-specific method of declaratively describing a DC/OS cluster.
 
 For more information, see [Cloud Installation Options](/docs/1.8/administration/installing/cloud/).
 

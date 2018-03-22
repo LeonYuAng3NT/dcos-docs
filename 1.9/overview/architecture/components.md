@@ -20,7 +20,7 @@ DC/OS provides a way to view and operate a large number of individual machine-le
 <div data-role="collapsible">
 <h2 id="apache-mesos">Apache Mesos</h2>
 <div>
-<p><strong>Description:</strong> Mesos manages resources and tasks as a distributed systems kernel. Mesos Master exposes scheduler, executor, and operator interfaces to facilitate cluster management. Mesos Agent manages individual executors, tasks, and resources on each <a href="/docs/1.9/overview/concepts/#dcos-agent-node">DC/OS agent node</a>. Mesos Agent Public is a Mesos Agent configured to run on <a href="/docs/1.9/overview/concepts/#public-agent-node">DC/OS public agent nodes</a>.</p>
+<p><strong>Description:</strong> Mesos manages resources and tasks as a distributed systems kernel. Mesos Master exposes scheduler, executor, and operator interfaces to facilitate cluster management. Mesos Agent manages individual executors, tasks, and resources on each <a href="/docs/1.9/overview/concepts/#dcos-agent-node">DC/OS agent node</a>. Mesos Agent Public is a Mesos Agent configured to run on <a href="/docs/1.9/overview/concepts/#public-agent-node-agent-node">DC/OS public agent nodes</a>.</p>
 <p>
   <strong>System Service(s):</strong>
   <ul>
@@ -41,10 +41,10 @@ DC/OS provides a way to view and operate a large number of individual machine-le
 </div>
 
 <div data-role="collapsible">
-<h2 id="apache-zookeeper">Apache Zookeeper</h2>
+<h2 id="apache-zookeeper">Apache ZooKeeper</h2>
 <div>
-<p><strong>Description:</strong> Zookeeper provides consistent, highly available, distributed key-value storage for configuration, synchronization, name registration, and cluster state storage.</p>
-<p><strong>System Service(s):</strong> N/A - Zookeeper is supervised by Exhibitor.</p>
+<p><strong>Description:</strong> ZooKeeper provides consistent, highly available, distributed key-value storage for configuration, synchronization, name registration, and cluster state storage.</p>
+<p><strong>System Service(s):</strong> N/A - ZooKeeper is supervised by Exhibitor.</p>
 <p>
   <strong>See Also:</strong>
   <ul>
@@ -58,7 +58,7 @@ DC/OS provides a way to view and operate a large number of individual machine-le
 <div data-role="collapsible">
 <h2 id="exhibitor">Exhibitor</h2>
 <div>
-<p><strong>Description:</strong> Exhibitor supervises Zookeeper and provides a management web interface.</p>
+<p><strong>Description:</strong> Exhibitor supervises ZooKeeper and provides a management web interface.</p>
 <p>
   <strong>System Service(s):</strong>
   <ul>
@@ -182,7 +182,7 @@ DC/OS includes built-in orchestration of the most commonly used high level conta
 
 Container runtimes execute and manage machine level processes in isolated operating system level environments.
 
-DC/OS supports multiple container runtimes using [Mesos' containerizer abstraction](http://mesos.apache.org/documentation/latest/containerizer/).
+DC/OS supports multiple container runtimes using [Mesos' containerizer abstraction](http://mesos.apache.org/documentation/latest/containerizers/).
 
 <div data-role="collapsible">
 <h2 id="universal-container-runtime">Universal Container Runtime</h2>
@@ -306,7 +306,7 @@ No software runs perfectly, especially not the first time. Distribute tasks acro
 <p>
   <strong>See Also:</strong>
   <ul>
-    <li><a href="http://www.linuxcommand.org/man_pages/logrotate8.html">Documentation</a></li>
+    <li><a href="https://linux.die.net/man/8/logrotate">Documentation</a></li>
     <li><a href="https://github.com/logrotate/logrotate">Source</a></li>
   </ul>
 </p>
@@ -421,7 +421,7 @@ In a world where machines are are given numbers instead of names, tasks are sche
   <ul>
     <li><a href="http://mesosphere.github.io/mesos-dns/">Documentation</a></li>
     <li><a href="https://github.com/mesosphere/mesos-dns">Source</a></li>
-    <li><a href="/docs/1.9/networking/mesos-dns/http-interface/">API Reference</a></li>
+    <li><a href="/docs/1.9/networking/mesos-dns/mesos-dns-api/">API Reference</a></li>
   </ul>
 </p>
 </div>
@@ -520,7 +520,8 @@ In a world where machines are are given numbers instead of names, tasks are sche
 <p>
   <strong>See Also:</strong>
   <ul>
-    <li><a href="https://github.com/erlang/epmd">Source</a></li>
+    <li><a href="http://erlang.org/doc/man/epmd.html">Documentation</a></li>
+    <li><a href="https://github.com/dcos/otp/tree/master/erts/epmd">Source</a></li>
   </ul>
 </p>
 </div>

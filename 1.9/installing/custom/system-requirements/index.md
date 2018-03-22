@@ -5,13 +5,13 @@ menu_order: 000
 
 # Hardware Prerequisites
 
-You must have a single bootstrap node, Mesos master nodes, and Mesos agent nodes.
+You must have a single bootstrap node, an odd number of Mesos master nodes, and any number Mesos of agent nodes.
 
 ## Bootstrap node
 
-1 node with 2 Cores, 16 GB RAM, 60 GB HDD. This is the node where DC/OS installation is run. This bootstrap node must also have:
+1 node with 2 cores, 16 GB RAM, 60 GB HDD. This is the node where DC/OS installation is run. This bootstrap node must also have:
 
-*   A High-availability (HA) TCP/Layer 3 load balancer, such as HAProxy, to balance the following TCP ports to all master nodes: 80, 443, 8080, 8181, 2181, 5050.
+*   A high-availability (HA) TCP/Layer 3 load balancer, such as HAProxy, to balance the following TCP ports to all master nodes: 80, 443, 8080, 8181, 2181, 5050.
 *  An unencrypted SSH key that can be used to authenticate with the cluster nodes over SSH. Encrypted SSH keys are not supported.
 
 **Important:** The bootstrap node must be separate from your cluster nodes.
@@ -21,6 +21,8 @@ You must have a single bootstrap node, Mesos master nodes, and Mesos agent nodes
 The cluster nodes are designated Mesos masters and agents during installation.
 
 ### Master nodes
+
+You must have an odd number of master nodes.
 
 Here are the master node hardware requirements.
 
@@ -33,7 +35,7 @@ Here are the master node hardware requirements.
 | Memory      | 32 GB RAM | 32 GB RAM   |
 | Hard disk   | 120 GB    | 120 GB      |
 
-There are many mixed workloads on the masters, for example Mesos replicated log and ZooKeeper. Some of these require fsync()ing every so often, and this can generate a lot of very expensive random I/O. We recommend the following: 
+There are many mixed workloads on the masters, for example Mesos replicated log and ZooKeeper. Some of these require fsync()ing every so often, and this can generate a lot of very expensive random I/O. We recommend the following:
 
 - Solid-state drive (SSD)
 - RAID controllers with a BBU
@@ -52,21 +54,31 @@ Here are the agent node hardware requirements.
 | Memory      | 16 GB RAM | 16 GB RAM   |
 | Hard disk   | 60 GB     | 60 GB       |
 
-The agent nodes must also have: 
+The agent nodes must also have:
 
 - A `/var` directory with 10 GB or more of free space. This directory is used by the sandbox for both [Docker and DC/OS Universal container runtime](/docs/1.9/deploying-services/containerizers/).
-- Network Access to a public Docker repository or to an internal Docker registry.
+
+- The agent's work directory, `/var/lib/mesos/slave`, should be on a separate device. This protects all the other services from a task overflowing the disk.
+
+  - To maintain backwards compatibility with frameworks written before the disk resource was introduced, by default the disk resource is not enforced.
+  - You can enable resource enforcement by inserting the environment variable MESOS_ENFORCE_CONTAINER_DISK_QUOTA=true into one of the Mesos agent extra config files (e.g. `/var/lib/dcos/mesos-slave-common`).
+  - Disk quotas are not supported by Docker tasks, so these can overflow the disk regardless of configuration.
+
+- Network access to a public Docker repository or to an internal Docker registry.
 
 *   On RHEL 7 and CentOS 7, firewalld must be stopped and disabled. It is a known <a href="https://github.com/docker/docker/issues/16137" target="_blank">Docker issue</a> that firewalld interacts poorly with Docker. For more information, see the <a href="https://github.com/docker/docker/blob/v1.6.2/docs/sources/installation/centos.md#firewalld" target="_blank">Docker CentOS firewalld</a> documentation.
 
     ```bash
     sudo systemctl stop firewalld && sudo systemctl disable firewalld
     ```
-*   DC/OS is installed to `/opt/mesosphere`. Make sure that `/opt/mesosphere` exists on a partition that is not on an LVM Logical Volume or shared storage.
+
+*   DC/OS is installed to `/opt/mesosphere`. `/opt/mesosphere` must be on the same mountpoint as `/`.  This is required because DC/OS installs systemd unit files under `/opt/mesosphere`. All systemd units must be available for enumeration during the initializing of the initial ramdisk at boot. If `/opt` is on a different partition or volume, systemd will fail to discover these units during the initialization of the ramdisk and DC/OS will not automatically restart upon reboot.
+
+
 *   The Mesos master and agent persistent information of the cluster is stored in the `/var/lib/mesos` directory.
-    
+
     **Important:** Do not remotely mount `/var/lib/mesos` or the Docker storage directory (by default `/var/lib/docker`).
-    
+
 *   Do not mount `/tmp` with `noexec`. This will prevent Exhibitor and ZooKeeper from running.    
 
 ### Port and Protocol Configuration
@@ -82,6 +94,8 @@ The agent nodes must also have:
 High speed internet access is recommended for DC/OS installation. A minimum 10 MBit per second is required for DC/OS services. The installation of some DC/OS services will fail if the artifact download time exceeds the value of MESOS_EXECUTOR_REGISTRATION_TIMEOUT within the file `/opt/mesosphere/etc/mesos-slave-common`. The default value for MESOS_EXECUTOR_REGISTRATION_TIMEOUT is 10 minutes.
 
 # Software Prerequisites
+
+**Tip:** Refer to [this shell script](https://raw.githubusercontent.com/dcos/dcos/1.9.1/cloud_images/centos7/install_prereqs.sh) for an example of how to install the software requirements for DC/OS masters and agents on a CentOS 7 host.
 
 ## All Nodes
 
@@ -127,7 +141,25 @@ Add the following line to your `/etc/sudoers` file. This disables the sudo passw
 
 Alternatively, you can SSH as the root user.
 
-### Enable NTP
+### Enable Time synchronization
+
+Time synchronization is a core requirement of DC/OS. There are various methods
+of ensuring time sync. NTP is the typical approach on bare-metal.
+Many cloud providers use hypervisors, which push time
+down to the VM guest operating systems. In certain circumstances, hypervisor
+time-sync may conflict with NTP.
+
+You must understand how to properly configure time synchronization for your
+environment. When in doubt, enable NTP and check using `/opt/mesosphere/bin/check-time`.
+
+#### Enable Check Time
+
+You must set the `ENABLE_CHECK_TIME` environment variable in order for
+ `/opt/mesosphere/bin/check-time` to function. It's recommended
+that you enable this globally. e.g. on CoreOS an entry in `/etc/profile.env`
+of `export ENABLE_CHECK_TIME=true` with set the appropriate variable.
+
+#### Using NTP
 
 Network Time Protocol (NTP) must be enabled on all nodes for clock synchronization. By default, during DC/OS startup you will receive an error if this is not enabled. You can check if NTP is enabled by running one of these commands, depending on your OS and configuration:
 
@@ -141,9 +173,9 @@ timedatectl
 
 Before installing DC/OS, you must ensure that your bootstrap node has the following prerequisites.
 
-**Important:** 
+**Important:**
 
-* If you specify `exhibitor_storage_backend: zookeeper`, the bootstrap node is a permanent part of your cluster. With `exhibitor_storage_backend: zookeeper` the leader state and leader election of your Mesos masters is maintained in Exhibitor ZooKeeper on the bootstrap node. For more information, see the configuration parameter [documentation](/docs/1.9/installing/custom/configuration-parameters/).
+* If you specify `exhibitor_storage_backend: zookeeper`, the bootstrap node is a permanent part of your cluster. With `exhibitor_storage_backend: zookeeper` the leader state and leader election of your Mesos masters is maintained in Exhibitor ZooKeeper on the bootstrap node. For more information, see the configuration parameter [documentation](/docs/1.9/installing/custom/configuration/configuration-parameters/).
 * The bootstrap node must be separate from your cluster nodes.
 
 ### DC/OS setup file
@@ -201,6 +233,6 @@ You must set the `LC_ALL` and `LANG` environment variables to `en_US.utf-8`.
 
 [1]: /docs/1.9/installing/custom/cli/
 [2]: /docs/1.9/installing/custom/system-requirements/install-docker-centos/
-[3]: https://downloads.dcos.io/dcos/stable/dcos_generate_config.sh
+[3]: https://downloads.dcos.io/dcos/stable/1.9.4/dcos_generate_config.sh
 [4]: /docs/1.9/installing/custom/gui/
 [5]: /docs/1.9/installing/custom/advanced/

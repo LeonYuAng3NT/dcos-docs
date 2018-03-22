@@ -26,7 +26,11 @@ This document provides instructions for upgrading a DC/OS cluster from version 1
 - In CentOS or RedHat, install IP sets with this command (used in some IP detect scripts): `sudo yum install -y ipset`
 - You must be familiar with using `systemctl` and `journalctl` command line tools to review and monitor service status. Troubleshooting notes can be found at the end of this [document](#troubleshooting).
 - You must be familiar with the [Advanced DC/OS Installation Guide][advanced-install].
-- You should take a snapshot of ZooKeeper prior to upgrading. Marathon supports rollbacks, but does not support downgrades.
+- Take a snapshot of ZooKeeper prior to upgrading. Marathon supports rollbacks, but does not support downgrades.
+- Verify that all your masters are in a healthy state: 
+   - Check the Exhibitor UI to confirm that all masters have joined the quorum successfully (the status indicator will show green). The Exhibitor UI is available at `http://<dcos_master>:8181/`.
+   - Verify that `curl http://<dcos_master_private_ip>:5050/metrics/snapshot` has the metric `registrar/log/recovered` with a value of `1` for each master.
+- Verify that all Marathon application constraints are valid before beginning the upgrade.  Use this [script](https://github.com/mesosphere/public-support-tools/blob/master/check-constraints.py) to check if your constraints are valid.
 
 ## Instructions
 
@@ -38,6 +42,7 @@ This document provides instructions for upgrading a DC/OS cluster from version 1
 
     *  You cannot change the `exhibitor_zk_backend` setting during an upgrade.
     *  The syntax of the DC/OS 1.8 `config.yaml` differs from that of DC/OS 1.7. For a detailed description of the 1.8 `config.yaml` syntax and parameters, see the [documentation](/docs/1.8/administration/installing/custom/configuration-parameters/).
+    * After updating the format of the `config.yaml`, compare the old `config.yaml` and new `config.yaml`.  Verify that there are no differences in pathways or configurations as changing these while upgrading can lead to catastrophic cluster failures.
 
 1.  After you have merged your 1.7 `config.yaml` into the 1.8 `config.yaml` format, you can build your installer package:
 
@@ -54,7 +59,7 @@ This document provides instructions for upgrading a DC/OS cluster from version 1
     1.  Run the [NGINX][advanced-install] container to serve the installation files.
 
 ### DC/OS Masters
-
+    
 Identify the ZooKeeper leader among the masters. This node should be the last master node that you upgrade. You can determine whether a master node is a ZooKeeper leader by sending the `stat` command to the ZooKeeper client port.
 
 ```

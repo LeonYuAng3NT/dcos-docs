@@ -5,7 +5,7 @@ feature_maturity: preview
 menu_order: 11.5
 ---
 
-The DC/OS virtual network feature is an out-of-the-box virtual networking solution that provides an ip-per-container for Mesos and Docker containers alike. The DC/OS virtual network uses CNI (Container Network Interface) for the [Mesos Containerizer](http://mesos.apache.org/documentation/latest/containerizer/#Mesos) and Docker libnetwork for the [Docker Containerizer](http://mesos.apache.org/documentation/latest/containerizer/#Docker).
+The DC/OS virtual network feature is an out-of-the-box virtual networking solution that provides an IP-per-container for Mesos and Docker containers alike. The DC/OS virtual network uses CNI (Container Network Interface) for the [Mesos Containerizer](http://mesos.apache.org/documentation/latest/containerizers/#Mesos) and Docker libnetwork for the [Docker Containerizer](http://mesos.apache.org/documentation/latest/containerizers/#Docker).
 
 DC/OS virtual networks allow containers launched through the Mesos Containerizer or Docker Containerizer to co-exist on the same IP network, allocating each container its own unique IP address. DC/OS virtual networks offer the following advantages:
 
@@ -53,15 +53,15 @@ Terminology:
 # Limitations
 * The DC/OS virtual network does not allow services to reserve IP addresses that result in ephemeral addresses for containers across multiple incarnations on the virtual network. This restriction ensures that a given client connects to the correct service.
 
-  [VIPs (virtual IP addresses)](/docs/1.8/usage/service-discovery/load-balancing-vips/) are built in to DC/OS and offer a clean way of allocating static addresses to services. If you are using virtual networks, you should use VIPs to access your services in order to support cached DNS requests and static IP addresses.
+  [VIPs (virtual IP addresses)](/docs/1.8/usage/service-discovery/load-balancing-vips/) are built in to DC/OS and offer a clean way of allocating static addresses to services. If you are using virtual networks, you should use VIPs to access your services to support cached DNS requests and static IP addresses.
 
 * The limitation on the total number of containers on the virtual network is the same as the number of IP addresses available on the overlay subnet. However, the limitation on the number of containers on an agent depends on the subnet (which will be a subset of the overlay subnet) allocated to the agent. For a given agent subnet, half the address space is allocated to the `MesosContainerizer` and the other half is allocated to the `DockerContainerizer`.
 
-* In DC/OS overlay, the subnet of an virtual network is sliced into smaller subnets and these smaller subnets are allocated to agents. When an agent has exhausted its allocated address range and a service tries to launch a container on the virtual network on this agent, the container launch will fail and the service will receive a `TASK_FAILED` message.
+* In DC/OS overlay, the subnet of a virtual network is sliced into smaller subnets and these smaller subnets are allocated to agents. When an agent has exhausted its allocated address range and a service tries to launch a container on the virtual network on this agent, the container launch will fail and the service will receive a `TASK_FAILED` message.
 
-  Since there is no API to report the exhaustion of addresses on an agent, it is up to the service to infer that containers cannot be launched on an virtual network due to lack of IP addresses on the agent. This limitation has a direct impact on the behavior of services, such as Marathon, that try to launch services with a specified number of instances. Due to this limitation, services such as Marathon might not be able to complete their obligation of launching a service on an virtual network if they try to launch instances of a service on an agent that has exhausted its allocated IP address range.
+  Since there is no API to report the exhaustion of addresses on an agent, it is up to the service to infer that containers cannot be launched on a virtual network due to lack of IP addresses on the agent. This limitation has a direct impact on the behavior of services, such as Marathon, that try to launch services with a specified number of instances. Due to this limitation, services such as Marathon might not be able to complete their obligation of launching a service on a virtual network if they try to launch instances of a service on an agent that has exhausted its allocated IP address range.
 
-  Keep this limitation in mind when debugging issues on frameworks that use an virtual network and you see the `TASK_FAILED` message.
+  Keep this limitation in mind when debugging issues on frameworks that use a virtual network and you see the `TASK_FAILED` message.
 
 * The DC/OS virtual network uses Linux bridge devices on agents to connect Mesos and Docker containers to the virtual network. The names of these bridge devices are derived from the virtual network name. Since Linux has a limitation of fifteen characters on network device names, there is a character limit of thirteen characters for the virtual network name (two characters are used to distinguish between a CNI bridge and a Docker bridge on the virtual network).
 

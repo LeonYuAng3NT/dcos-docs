@@ -1,31 +1,36 @@
 ---
-post_title: Building an IoT Pipeline
-menu_order: 0
+post_title: Deploying a Load-Balanced Data Pipeline
+menu_order: 100
 ---
 
-
-In this tutorial, a containerized Ruby on Rails app named Tweeter in installed and deployed using DC/OS. Tweeter is an app similar to Twitter that you can use to post 140-character messages to the internet. Then, you use Zeppelin to perform real-time analytics on the data created by Tweeter.
-
-Tweeter:
-
-*   Stores tweets in the DC/OS [Cassandra][1] service.
-*   Streams tweets to the DC/OS [Kafka][2] service in real-time.
-*   Performs real-time analytics with the DC/OS [Spark][3] and [Zeppelin][4] services.
-
-This tutorial uses DC/OS to launch and deploy these microservices to your cluster.
-
-- The Cassandra database is used on the backend to store the Tweeter app data. 
-- The Kafka publish-subscribe message service receives tweets from Cassandra and routes them to Zeppelin for real-time analytics.
-- The [Marathon load balancer (Marathon-LB)][12] is an HAProxy based load balancer for Marathon only. It is useful when you require external routing or layer 7 load balancing features.
-- Zeppelin is an interactive analytics notebook that works with DC/OS Spark on the backend to enable interactive analytics and visualization. Because it's possible for Spark and Zeppelin to consume all of your cluster resources, you must specify a maximum number of cores for the Zeppelin service.
+In this tutorial you install and deploy a containerized Ruby on Rails app named Tweeter. Tweeter is an app similar to Twitter that you can use to post 140-character messages to the internet. Then, you use Zeppelin to perform real-time analytics on the data created by Tweeter.
+ 
+<table class="table" bgcolor="#FAFAFA"> <tr> <td style="border-left: thin solid; border-top: thin solid; border-bottom: thin solid;border-right: thin solid;"><b>Important:</b> Mesosphere does not support this tutorial, associated scripts, or commands, which are provided without warranty of any kind. The purpose of this tutorial is to demonstrate capabilities, and may not be suited for use in a production environment. Before using a similar solution in your environment, you must adapt, validate, and test.</td> </tr> </table>
 
 This tutorial demonstrates how you can build a complete IoT pipeline on DC/OS in about 15 minutes! You will learn:
 
 *   How to install DC/OS services.
 *   How to add apps to DC/OS Marathon.
-*   How to route apps to the public node with the [Marathon load balancer][5].
+*   How to route public traffic to the private application with Marathon-LB.
 *   How your apps are discovered.
-*   How to scale your apps.
+*   How to scale your apps. 
+
+This tutorial uses DC/OS to launch and deploy these microservices to your cluster:
+
+### Cassandra
+The [Cassandra][1] database is used on the backend to store the Tweeter app data. 
+
+### Kafka
+The [Kafka][2] publish-subscribe message service receives tweets from Cassandra and routes them to Zeppelin for real-time analytics.
+
+### Marathon-LB
+[Marathon-LB][12] is an HAProxy based load balancer for Marathon only. It is useful when you require external routing or layer 7 load balancing features.
+
+### Zeppelin
+[Zeppelin][4] is an interactive analytics notebook that works with DC/OS Spark on the backend to enable interactive analytics and visualization. Because it's possible for Spark and Zeppelin to consume all of your cluster resources, you must specify a maximum number of cores for the Zeppelin service.
+
+### Tweeter
+Tweeter stores tweets in the DC/OS Cassandra service, streams tweets to the DC/OS Kafka service in real-time, and performs real-time analytics with the DC/OS [Spark][3] and Zeppelin services.
 
 **Prerequisites:**
 
@@ -63,7 +68,7 @@ __Tip:__ You can also install DC/OS packages from the DC/OS CLI with the [`dcos 
 
 In this step you deploy the containerized Tweeter app to a public node.
 
-1.  Navigate to the [Tweeter](https://github.com/mesosphere/tweeter/) GitHub repository and save the `/tweeter/tweeter.json` Marathon app definition file. 
+1.  Navigate to the [Tweeter](https://github.com/mesosphere/tweeter/) GitHub repository and save the `/tweeter/1.9/tweeter.json` Marathon app definition file. 
 
 1.  Add the `HAPROXY_0_VHOST` definition with the public IP address of your [public agent][9] node to your `tweeter.json` file. 
 
@@ -117,7 +122,7 @@ In this step you deploy the containerized Tweeter app to a public node.
 
 Deploy the post-tweets containerized app to see DC/OS load balancing in action. This app automatically posts a large number of tweets from Shakespeare. The app will post more than 100k tweets one by one, so you'll see them coming in steadily when you refresh the page. 
 
-1.  Navigate to the [Tweeter](https://github.com/mesosphere/tweeter/) GitHub repository and save the `tweeter/post-tweets.json` Marathon app definition file. 
+1.  Navigate to the [Tweeter](https://github.com/mesosphere/tweeter/) GitHub repository and save the `tweeter/1.9/post-tweets.json` Marathon app definition file. 
 
 1.  Deploy the `post-tweets.json` Marathon app definition file. 
 
@@ -161,7 +166,7 @@ The Tweeter app uses the service discovery and load balancer service that is ins
 
 Next, you'll perform real-time analytics on the stream of tweets coming in from Kafka.
 
-1.  Navigate to Zeppelin at `https://<master_ip>/service/zeppelin/`, click **Import Note** and import `tweeter-analytics.json`. Zeppelin is preconfigured to execute Spark jobs on the DC/OS cluster, so there is no further configuration or setup required. Be sure to use `https://`, not `http://`.
+1.  Navigate to Zeppelin at `https://<master_ip>/service/zeppelin/`, click **Import Note** and import `1.9/tweeter-analytics.json`. Zeppelin is preconfigured to execute Spark jobs on the DC/OS cluster, so there is no further configuration or setup required. Be sure to use `https://`, not `http://`.
     
     **Tip:** Your master IP address is the URL of the DC/OS web interface.
 

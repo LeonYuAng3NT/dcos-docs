@@ -252,7 +252,7 @@ Mesos-DNS generates a few special records:
 
 *   For the leading master: A record (`leader.mesos`) and SRV records (`_leader._tcp.mesos` and `_leader._udp.mesos`)
 *   For all service schedulers: A records (`myservice.mesos`) and SRV records (`_myservice._tcp.myservice.mesos`)
-*   For every known DC/OS master: A records (`master.mesos`) and SRV records (`_master._tcp.mesos` and `_master._udp.mesos`)
+*   For every known DC/OS master: A records (`master.mesos`)
 *   For every known DC/OS agent: A records (`slave.mesos`) and SRV records (`_slave._tcp.mesos`)
 
 **Important:** To query the leading master node, always query `leader.mesos`, not `master.mesos`. See [this FAQ entry][2] for more information.
@@ -294,13 +294,13 @@ You can get a comprehensive list of the apps running on your DC/OS cluster nodes
 2.  Run this command from your master node to view the node details:
 
     ```bash
-    curl http://localhost:8123/v1/enumerate
+    curl -H "Authorization: token=<auth-token>" http://<master-ip>/mesos_dns/v1/enumerate
     ```
 
     In this example, Kafka and Chronos are installed:
 
     ```bash
-       curl http://localhost:8123/v1/enumerate
+       curl -H "Authorization: token=<auth-token>" http://<master-ip>/mesos_dns/v1/enumerate
          {
            "frameworks": [
             {

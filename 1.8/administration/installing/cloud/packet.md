@@ -6,7 +6,9 @@ menu_order: 3
 
 You can create a DC/OS cluster on Packet bare metal using Terraform.
 
-The included Terraform templates are configured to run Mesosphere DC/OS on Packet. Depending on the DC/OS services that you install, or the amount of computing power your workload needs, you might have to modify the templates to suit your needs. You can modify the Terraform templates, but Mesosphere cannot assist in troubleshooting. If you require support, please email help@packet.net, visit the Packet IRC channel (#packethost on freenode) or consider the Enterprise DC/OS.
+The included Terraform templates are configured to run Mesosphere DC/OS on Packet. Depending on the DC/OS services that you install, or the amount of computing power your workload needs, you might have to modify the templates to suit your needs. You can modify the Terraform templates, but Mesosphere cannot assist in troubleshooting. If you require support, please email help@packet.net, visit the Packet IRC channel (#packethost on freenode) or consider Enterprise DC/OS.
+
+**Important:** Upgrades are not supported with this installation method.
 
 ## Hardware
 
@@ -22,9 +24,9 @@ The included Terraform templates are configured to run Mesosphere DC/OS on Packe
 
 ## Prerequisites:
 
-- [Packet API Key](https://help.packet.net/technical/api/how-to-use-the-packet-api)
+- [Packet API Key](https://help.packet.net/quick-start/api-integrations)
 
-- [Packet Project ID](https://help.packet.net/technical/api/how-to-use-the-packet-api)
+- [Packet Project ID](https://help.packet.net/quick-start/api-integrations)
 
 - [Terraform by Hashicorp](https://www.terraform.io/intro/getting-started/install.html)
 
@@ -53,7 +55,7 @@ The included Terraform templates are configured to run Mesosphere DC/OS on Packe
     - packet_project_id - Packet Project ID
 
     - dcos_installer_url - Where to get DC/OS
-      https://downloads.dcos.io/dcos/stable/dcos_generate_config.sh
+      https://downloads.dcos.io/dcos/stable/1.8.9/dcos_generate_config.sh
 
     The following have default values and may be changed depending on your requirements:
 

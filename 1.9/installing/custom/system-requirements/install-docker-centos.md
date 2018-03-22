@@ -14,7 +14,11 @@ In addition to the general [Docker requirements and recommendations for DC/OS][1
 
 * Use CentOS 7.2 or greater. OverlayFS support was improved in 7.2 to fix <a href="https://github.com/docker/docker/issues/10294" target="_blank">a bug with XFS</a>.
 
-* Format node storage as XFS. As of CentOS 7.2, "<a href="https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/7/html/7.2_Release_Notes/technology-preview-file_systems.html" target="_blank">only XFS is currently supported for use as a lower layer file system</a>".
+* Format node storage as XFS with the `ftype=1` option. As of CentOS 7.2, "<a href="https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/7/html/7.2_Release_Notes/technology-preview-file_systems.html" target="_blank">only XFS is currently supported for use as a lower layer file system</a>".
+
+  ```bash
+  mkfs -t xfs -n ftype=1 /dev/sdc1
+  ```
 
 # Instructions
 
@@ -78,7 +82,7 @@ The following instructions demonstrate how to use Docker with OverlayFS on CentO
     EOF
     ```
 
-1.  Install the Docker engine, daemon, and service. 
+1.  Install the Docker engine, daemon, and service.
 
     ```bash
     sudo yum install -y docker-engine-1.13.1 docker-engine-selinux-1.13.1

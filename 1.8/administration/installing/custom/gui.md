@@ -8,6 +8,8 @@ The automated GUI installer provides a simple graphical interface that guides yo
 
 This installation method uses a bootstrap node to administer the DC/OS installation across your cluster. The bootstrap node uses an SSH key to connect to each node in your cluster to automate the DC/OS installation.
 
+**Important:** Upgrades are not supported with this installation method.
+
 The DC/OS installation creates these folders:
 
 <table class="table">
@@ -52,7 +54,7 @@ The DC/OS installation creates these folders:
 1.  Download the [DC/OS installer][1] to your bootstrap node.
 
     ```bash
-    curl -O https://downloads.dcos.io/dcos/stable/dcos_generate_config.sh
+    curl -O https://downloads.dcos.io/dcos/stable/1.8.9/dcos_generate_config.sh
     ```
 
 1.  From your terminal, start the DC/OS GUI installer with this command.
@@ -186,7 +188,7 @@ It is recommended that you save your DC/OS installer file immediately after inst
 - [Using your cluster][6]
 - [Uninstall DC/OS][7]
 
-[1]: https://downloads.dcos.io/dcos/stable/dcos_generate_config.sh
+[1]: https://downloads.dcos.io/dcos/stable/1.8.9/dcos_generate_config.sh
 [2]: /docs/1.8/usage/service-discovery/
 [3]: /docs/1.8/administration/installing/custom/system-requirements/
 [4]: /docs/1.8/administration/installing/custom/convert-agent-type/

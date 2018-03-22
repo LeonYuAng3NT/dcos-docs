@@ -8,10 +8,14 @@ The recommended method to install the DC/OS CLI is from the DC/OS web interface.
 
 # Installing CLI from the web interface
 
-1.  Click **Install CLI** from the top-left corner of the DC/OS web interface.
+1.  At the top-left corner of the DC/OS web interface, click the down arrow to the right of your cluster name.
+
+    ![open cluster popup](/docs/1.9/img/open-cluster-popup.png)
+
+1.  Select **Install CLI**.
 
     ![CLI install UI](/docs/1.9/img/install-cli.png)
-    
+
 1.  Copy and paste the code snippets into your terminal.
 
     ![CLI copy/paste](/docs/1.9/img/install-cli-terminal.png)
@@ -41,7 +45,7 @@ The recommended method to install the DC/OS CLI is from the DC/OS web interface.
 
     **Important:** The CLI must be installed on a system that is external to your DC/OS cluster.
 
-1.  Move the the CLI binary to your local bin directory.
+1.  Move the CLI binary to your local bin directory.
 
     ```bash
     sudo mv dcos /usr/local/bin 

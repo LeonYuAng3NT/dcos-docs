@@ -6,7 +6,9 @@ menu_order: 2
 
 You can create a DC/OS cluster on DigitalOcean using Terraform.
 
-The included Terraform templates are configured to run Mesosphere DC/OS on DigitalOcean. Depending on the DC/OS services that you install, or the amount of computing power your workload needs, you might have to modify the templates to suit your needs. You can modify the Terraform templates, but Mesosphere cannot assist in troubleshooting. If you require support with droplet creation or other related issues, please email support@digitalocean.com, visit the unofficial DigitalOcean IRC channel (#digitalocean on freenode) or consider the Enterprise DC/OS.
+The included Terraform templates are configured to run Mesosphere DC/OS on DigitalOcean. Depending on the DC/OS services that you install, or the amount of computing power your workload needs, you might have to modify the templates to suit your needs. You can modify the Terraform templates, but Mesosphere cannot assist in troubleshooting. If you require support with droplet creation or other related issues, please email support@digitalocean.com, visit the unofficial DigitalOcean IRC channel (#digitalocean on freenode) or consider [Enterprise DC/OS](https://mesosphere.com/).
+
+**Important:** Upgrades are not supported with this installation method.
 
 ## Security
 
@@ -67,7 +69,7 @@ The included Terraform templates are configured to run Mesosphere DC/OS on Digit
     - ssh_key_fingerprint - The key ID from above
 
     - dcos_installer_url - Where to get DC/OS
-      https://downloads.dcos.io/dcos/stable/dcos_generate_config.sh
+      https://downloads.dcos.io/dcos/stable/1.9.4/dcos_generate_config.sh
 
     The following have default values and may be changed depending on your requirements:
 

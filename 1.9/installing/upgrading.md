@@ -26,10 +26,15 @@ This document provides instructions for upgrading a DC/OS cluster from version 1
 - In CentOS or RedHat, install IP sets with this command (used in some IP detect scripts): `sudo yum install -y ipset`
 - You must be familiar with using `systemctl` and `journalctl` command line tools to review and monitor service status. Troubleshooting notes can be found at the end of this [document](#troubleshooting).
 - You must be familiar with the [Advanced DC/OS Installation Guide][advanced-install].
-- You should take a snapshot of ZooKeeper prior to upgrading. Marathon supports rollbacks, but does not support downgrades.
+Take a snapshot of ZooKeeper prior to upgrading. Marathon supports rollbacks, but does not support downgrades.
+- Ensure that Marathon event subscribers are disabled before beginning the upgrade. Leave them disabled after completing the upgrade, as this feature is now deprecated.
+- Verify that all Marathon application constraints are valid before beginning the upgrade.  Use this [script](https://github.com/mesosphere/public-support-tools/blob/master/check-constraints.py) to check if your constraints are valid.
 - The full DC/OS version string that you are upgrading from.
   - In 1.8 this can be found in the lower left corner of the DC/OS UI when screen is maximized.
   - In 1.9 this can be found under the Cluster menu.
+- Verify that all your masters are in a healthy state: 
+   - Check the Exhibitor UI to confirm that all masters have joined the quorum successfully (the status indicator will show green). The Exhibitor UI is available at `http://<dcos_master>:8181/`.
+   - Verify that `curl http://<dcos_master_private_ip>:5050/metrics/snapshot` has the metric `registrar/log/recovered` with a value of `1` for each master.
 
 ## Supported upgrade paths
 
@@ -46,7 +51,7 @@ This document provides instructions for upgrading a DC/OS cluster from version 1
     **Important:**
 
     *  You cannot change the `exhibitor_zk_backend` setting during an upgrade.
-    *  The syntax of the DC/OS 1.9 `config.yaml` differs from that of DC/OS 1.8. For a detailed description of the 1.9 `config.yaml` syntax and parameters, see the [documentation](/docs/1.9/installing/custom/configuration-parameters/).
+    *  The syntax of the DC/OS 1.9 `config.yaml` differs from that of DC/OS 1.8. For a detailed description of the 1.9 `config.yaml` syntax and parameters, see the [documentation](/docs/1.9/installing/custom/configuration/configuration-parameters/).
 
 1.  After you have converted your 1.8 `config.yaml` into the 1.9 `config.yaml` format, you can build your installer package:
 

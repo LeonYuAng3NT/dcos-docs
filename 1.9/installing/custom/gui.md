@@ -8,6 +8,8 @@ The automated GUI installer provides a simple graphical interface that guides yo
 
 This installation method uses a bootstrap node to administer the DC/OS installation across your cluster. The bootstrap node uses an SSH key to connect to each node in your cluster to automate the DC/OS installation.
 
+**Important:** Upgrades are not supported with this installation method.
+
 The DC/OS installation creates these folders:
 
 <table class="table">
@@ -52,7 +54,7 @@ The DC/OS installation creates these folders:
 1.  Download the [DC/OS installer][1] to your bootstrap node.
 
     ```bash
-    curl -O https://downloads.dcos.io/dcos/stable/dcos_generate_config.sh
+    curl -O https://downloads.dcos.io/dcos/stable/1.9.2/dcos_generate_config.sh
     ```
 
 1.  From your terminal, start the DC/OS GUI installer with this command.
@@ -94,7 +96,7 @@ The DC/OS installation creates these folders:
     Specify a comma-separated list of your internal static [private agent](/docs/1.9/overview/concepts/#private) private IP addresses.
 
     #### Agent Public IP List
-    Specify a comma-separated list of your internal static [public agent](/docs/1.9/overview/concepts/#public) private IP addresses.
+    Specify a comma-separated list of your internal static [public agent](/docs/1.9/overview/concepts/#public-agent-node) private IP addresses.
 
     #### Master Public IP
     Specify a publicly accessible proxy IP address to one of your master nodes. If you don't have a proxy or already have access to the network where you are deploying this cluster, you can use one of the master IP's that you specified in the master list. This proxy IP address is used to access the DC/OS web interface on the master node after DC/OS is installed.
@@ -185,7 +187,7 @@ It is recommended that you save your DC/OS installer file immediately after inst
 - [Troubleshooting DC/OS installation][9]
 - [Uninstall DC/OS][7]
 
-[1]: https://downloads.dcos.io/dcos/stable/dcos_generate_config.sh
+[1]: https://downloads.dcos.io/dcos/stable/1.9.4/dcos_generate_config.sh
 [2]: /docs/1.9/networking/
 [3]: /docs/1.9/installing/custom/system-requirements/
 [4]: /docs/1.9/administering-clusters/convert-agent-type/

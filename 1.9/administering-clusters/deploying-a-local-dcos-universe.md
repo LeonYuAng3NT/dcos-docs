@@ -17,197 +17,210 @@ You can install and run DC/OS services on a datacenter without internet access w
 
 # <a name="default"></a>Installing the default Universe packages
 
-1. From a terminal prompt, use the following cURL commands to download the local Universe and its service definitions onto your local drive.
+1. Because DC/OS 1.9 is not the latest release, you will need to build your own local Universe image. Follow [these instructions][4], skipping step 3.
 
-     ```bash
-     curl -v https://downloads.mesosphere.com/universe/public/local-universe.tar.gz -o local-universe.tar.gz
-     curl -v https://raw.githubusercontent.com/mesosphere/universe/version-3.x/docker/local-universe/dcos-local-universe-http.service -o dcos-local-universe-http.service
-     curl -v https://raw.githubusercontent.com/mesosphere/universe/version-3.x/docker/local-universe/dcos-local-universe-registry.service -o dcos-local-universe-registry.service
-     ```
+1.  Use [secure copy](https://linux.die.net/man/1/scp) to transfer the Universe and registry files to a master node. Replace `<master-IP>` with the public IP address of a master before issuing the following commands.
 
-2. Use [secure copy](https://linux.die.net/man/1/scp) to transfer the Universe and registry files to a master node. Replace `<master-IP>` with the public IP address of a master before issuing the following commands.
      **Tip:** You can find the public IP address of a master in the top left corner of the DC/OS web interface.
 
-     ```bash
-     scp local-universe.tar.gz core@<master-IP>:~
-     scp dcos-local-universe-http.service core@<master-IP>:~
-     scp dcos-local-universe-registry.service core@<master-IP>:~
-     ```
+    ```bash
+    scp local-universe.tar.gz core@<master-IP>:~
+    scp dcos-local-universe-http.service core@<master-IP>:~
+    scp dcos-local-universe-registry.service core@<master-IP>:~
+    ```
    
-3. [SSH](/docs/1.9/administering-clusters/sshcluster/) into the master using the following command. Replace `<master-IP>` with the IP address used in the previous commands.
+1.  [SSH](/docs/1.9/administering-clusters/sshcluster/) into the master using the following command. Replace `<master-IP>` with the IP address used in the previous commands.
 
-     ```bash
-     ssh -A core@<master-IP> 
-     ```
+    ```bash
+    ssh -A core@<master-IP> 
+    ```
      
-4. Confirm that the files were successfully copied.
+1.  Confirm that the files were successfully copied.
 
-     ```
-     ls
-     ```
+    ```
+    ls
+    ```
      
-5. You should see the following files listed.
+1.  You should see the following files listed.
 
-     ```
-     dcos-local-universe-http.service  dcos-local-universe-registry.service  local-universe.tar.gz
-     ```
+    ```
+    dcos-local-universe-http.service  dcos-local-universe-registry.service  local-universe.tar.gz
+    ```
 
-6. Move the registry files into the `/etc/systemd/system/` directory.
+1.  Move the registry files into the `/etc/systemd/system/` directory.
 
-     ```
-     sudo mv dcos-local-universe-registry.service /etc/systemd/system/
-     sudo mv dcos-local-universe-http.service /etc/systemd/system/
-     ```
+    ```
+    sudo mv dcos-local-universe-registry.service /etc/systemd/system/
+    sudo mv dcos-local-universe-http.service /etc/systemd/system/
+    ```
      
-7. Confirm that the files were successfully copied into `/etc/systemd/system/`.
+1.  Confirm that the files were successfully copied into `/etc/systemd/system/`.
 
-     ```bash
-     ls -la /etc/systemd/system/
-     ```
+    ```bash
+    ls -la /etc/systemd/system/
+    ```
 
-8. Load the Universe into the local Docker instance.
+1.  Load the Universe into the local Docker instance.
 
-     ```bash
-     docker load < local-universe.tar.gz
-     ```
+    ```bash
+    docker load < local-universe.tar.gz
+    ```
      
-     **Tip:** This may take some time to complete.
+    **Tip:** This may take some time to complete.
      
-9. Restart the systemd daemon.
+1.  Restart the systemd daemon.
 
-     ```bash
-     sudo systemctl daemon-reload
-     ```
+    ```bash
+    sudo systemctl daemon-reload
+    ```
      
-10. Enable and start the `dcos-local-universe-http` and `dcos-local-universe-registry` services.
+1.  Enable and start the `dcos-local-universe-http` and `dcos-local-universe-registry` services.
 
-     ```bash
-     systemctl enable dcos-local-universe-http
-     systemctl enable dcos-local-universe-registry
-     sudo systemctl start dcos-local-universe-http
-     sudo systemctl start dcos-local-universe-registry
-     ```
+    ```bash
+    systemctl enable dcos-local-universe-http
+    systemctl enable dcos-local-universe-registry
+    sudo systemctl start dcos-local-universe-http     
+    sudo systemctl start dcos-local-universe-registry
+    ```
      
-11. Use the following commands to confirm that the services are now up and running.
+1.  Use the following commands to confirm that the services are now up and running.
 
-     ```bash
-     sudo systemctl status dcos-local-universe-http
-     sudo systemctl status dcos-local-universe-registry
-     ```
-
-12. If you only have one master, skip to step 25. If you have multiple masters, continue to the next step.
-
-13. Use the following command to discover the private IP addresses of all of your masters. Identify the private IP address of the master you are SSHed into right now from the list.
-
-     **Tip:** It will match the path shown after `core@ip-` in your prompt, where the hyphens become periods. 
-
-     ```
-     host master.mesos
-     ```
+    ```bash
+    sudo systemctl status dcos-local-universe-http
+    sudo systemctl status dcos-local-universe-registry
+    ```
      
-14. Use [secure copy](https://linux.die.net/man/1/scp) to transfer the Universe and registry files to one of the other masters. Replace `<master-IP>` with the IP address of the other master. 
+1.  If you only have one master, skip to step 25. If you have multiple masters, continue to the next step.
 
-     ```bash
-     scp local-universe.tar.gz core@<master-IP>:~
-     scp /etc/systemd/system/dcos-local-universe-registry.service core@<master-IP>:~
-     scp /etc/systemd/system/dcos-local-universe-http.service core@<master-IP>:~
-     ```
+1.  Use the following command to discover the private IP addresses of all of your masters. Identify the private IP address of the master you are SSHed into right now from the list.
+
+    **Tip:** It will match the path shown after `core@ip-` in your prompt, where the hyphens become periods. 
+
+    ```
+    host master.mesos
+    ```
      
-15. [SSH](/docs/1.9/administering-clusters/sshcluster/) into the master that you just copied these files to.
+1.  Use [secure copy](https://linux.die.net/man/1/scp) to transfer the Universe and registry files to one of the other masters. Replace `<master-IP>` with the IP address of the other master. 
 
-     ```bash
-     ssh -A core@<master_IP>
-     ```
+    ```bash
+    scp local-universe.tar.gz core@<master-IP>:~
+    scp /etc/systemd/system/dcos-local-universe-registry.service core@<master-IP>:~
+    scp /etc/systemd/system/dcos-local-universe-http.service core@<master-IP>:~
+    ```
      
-16. Confirm that the files were successfully copied.
+1.  [SSH](/docs/1.9/administering-clusters/sshcluster/) into the master that you just copied these files to.
 
-     ```
-     ls
-     ```
+    ```bash
+    ssh -A core@<master_IP>
+    ```
      
-17. You should see the following files listed.
+1.  Confirm that the files were successfully copied.
 
-     ```
-     dcos-local-universe-http.service  dcos-local-universe-registry.service  local-universe.tar.gz
-     ```
-
-18. Move the registry files into the `/etc/systemd/system/` directory.
-
-     ```
-     sudo mv dcos-local-universe-registry.service /etc/systemd/system/
-     sudo mv dcos-local-universe-http.service /etc/systemd/system/
-     ```
+    ```
+    ls
+    ```
      
-19. Confirm that the files were successfully copied into `/etc/systemd/system/`.
+1.  You should see the following files listed.
 
-     ```bash
-     ls -la /etc/systemd/system/
-     ```
+    ```
+    dcos-local-universe-http.service  dcos-local-universe-registry.service  local-universe.tar.gz
+    ```
 
-20. Load the Universe into the local Docker instance.
+1.  Move the registry files into the `/etc/systemd/system/` directory.
 
-     ```
-     docker load < local-universe.tar.gz
-     ```
+    ```
+    sudo mv dcos-local-universe-registry.service /etc/systemd/system/
+    sudo mv dcos-local-universe-http.service /etc/systemd/system/
+    ```
      
-     **Tip:** This may take some time to complete.
+1.  Confirm that the files were successfully copied into `/etc/systemd/system/`.
+
+    ```bash
+    ls -la /etc/systemd/system/
+    ```
+
+1.  Load the Universe into the local Docker instance.
+
+    ```
+    docker load < local-universe.tar.gz
+    ```
      
-21. Restart the Docker daemon.
-
-     ```bash
-     sudo systemctl daemon-reload
-     ```
+    **Tip:** This may take some time to complete.
      
-22. Start the `dcos-local-universe-http` and `dcos-local-universe-registry` services.
+1.  Restart the Docker daemon.
 
-     ```bash
-     sudo systemctl start dcos-local-universe-http
-     sudo systemctl start dcos-local-universe-registry
-     ```
+    ```bash
+    sudo systemctl daemon-reload
+    ```
      
-23. Use the following commands to confirm that the services are now up and running.
+1.  Start the `dcos-local-universe-http` and `dcos-local-universe-registry` services.
 
-     ```bash
-     sudo systemctl status dcos-local-universe-http
-     sudo systemctl status dcos-local-universe-registry
-     ```
+    ```bash
+    sudo systemctl start dcos-local-universe-http
+    sudo systemctl start dcos-local-universe-registry
+    ```
+     
+1.  Use the following commands to confirm that the services are now up and running.
 
-24. Repeat steps 14 through 23 until you have completed this procedure for all of your masters. Then continue to the next step.
+    ```bash
+    sudo systemctl status dcos-local-universe-http
+    sudo systemctl status dcos-local-universe-registry
+    ```
 
-25. Close the SSH session by typing `exit` or open a new terminal prompt tab.
+1.  Repeat steps 14 through 23 until you have completed this procedure for all of your masters. Then continue to the next step.
+
+1.  Close the SSH session by typing `exit` or open a new terminal prompt tab.
+     
      **Tip:** You may have to exit more than one SSH session if you have multiple masters.
 
-26. (Optional) Use the following command to remove the references to the default Universe from your cluster. If you want to leave the default Universe in place and just add the local Universe as an additional repository, you can skip to the next step.
+1.  (Optional) Use the following command to remove the references to the default Universe from your cluster. If you want to leave the default Universe in place and just add the local Universe as an additional repository, you can skip to the next step.
 
-     ```bash
-     dcos package repo remove Universe
-     ```
+    ```bash
+    dcos package repo remove Universe
+    ```
      
-     **Tip:** You can also remove the references to the default Universe repository from **Settings** > **Repositories** in the DC/OS web interface.
+    **Tip:** You can also remove the references to the default Universe repository from **Settings** > **Repositories** in the DC/OS web interface.
      
-27. Use the following command to add a reference to the new local Universes that you added to each master.
+1.  Use the following command to add a reference to the new local Universes that you added to each master.
 
-     ```bash
-     dcos package repo add local-universe http://master.mesos:8082/repo
-     ```
+    ```bash
+    dcos package repo add local-universe http://master.mesos:8082/repo
+    ```
 
-28. [SSH into one of your agent nodes.](/docs/1.9/administering-clusters/sshcluster/)
+1.  [SSH into one of your agent nodes.](/docs/1.9/administering-clusters/sshcluster/)
 
-     ```bash
-     dcos node ssh --master-proxy --mesos-id=<mesos-id>
-     ```
+    ```bash
+    dcos node ssh --master-proxy --mesos-id=<mesos-id>
+    ```
      
-29. Use the following commands to download a copy of the DC/OS certificate locally and set it as trusted.
+1.  Use the following commands to download a copy of the DC/OS certificate locally and set it as trusted.
 
-     ```bash
-     sudo mkdir -p /etc/docker/certs.d/master.mesos:5000
-     sudo curl -o /etc/docker/certs.d/master.mesos:5000/ca.crt http://master.mesos:8082/certs/domain.crt
-     sudo systemctl restart docker
-     ```
-     
-30. Close the SSH session by typing `exit` or open a new terminal prompt tab. Repeat steps 28 and 29 on each agent node.
+    ```bash
+    sudo mkdir -p /etc/docker/certs.d/master.mesos:5000
+    sudo curl -o /etc/docker/certs.d/master.mesos:5000/ca.crt http://master.mesos:8082/certs/domain.crt
+    sudo systemctl restart docker
+    ```
 
-31. To verify your success, log into the DC/OS web interface and open the **Universe** > **Packages** tab. You should see a list of selected packages. Go ahead and try to install one of the packages. 
+1. Configure the Apache Mesos fetcher to trust the downloaded Docker certificate.
+
+   1. Copy the certificate:
+   ```
+   sudo cp /etc/docker/certs.d/master.mesos:5000/ca.crt /var/lib/dcos/pki/tls/certs/docker-registry-ca.crt
+   ```
+   1. Generate a hash:
+   ```
+   cd /var/lib/dcos/pki/tls/certs/
+   openssl x509 -hash -noout -in docker-registry-ca.crt
+   ```
+   1. Create a soft link:
+   ```
+   sudo ln -s /var/lib/dcos/pki/tls/certs/docker-registry-ca.crt /var/lib/dcos/pki/tls/certs/<hash_number>.0
+   ```
+   **Note:** You will need to create the `/pki/tls/certs` directory on the public agent.
+
+1.  Close the SSH session by typing `exit` or open a new terminal prompt tab. Repeat steps 28-30 on each agent node.
+
+1.  To verify your success, log into the DC/OS web interface and open the **Universe** > **Packages** tab. You should see a list of selected packages. Go ahead and try to install one of the packages. 
 
 
 
@@ -225,7 +238,7 @@ You can install and run DC/OS services on a datacenter without internet access w
 
     By default, only the `selected` packages are bundled. If you'd like to get something else, use the build your own [instructions][4].
 
-# <a name="build"></a>Installing a selected set of Universe packages
+# <a name="build"></a>Installing your own set of Universe packages
 
 **Prerequisite:** [Git](https://git-scm.com/). On Unix/Linux, see these <a href="https://git-scm.com/book/en/v2/Getting-Started-Installing-Git" target="_blank">installation instructions</a>.
 
@@ -244,19 +257,18 @@ To install your own set of packages you must build a customized local Universe D
     sudo make base
     ```
 
-3.  Inside the `Makefile` replace `--selected` flag with the comma-separated list of selected packages preceeded by `--include` flag. To minimize the container size and download time, you can select only what you need. If you do not modify the `Makefile`, all *selected* Universe packages will be included. To view which packages are selected, click on the **Universe** tab in the DC/OS web interface. 
+3.  Build the `mesosphere/universe` Docker image and compress it to the `local-universe.tar.gz`
+file. Specify a comma-separated list of package names and versions using the `DCOS_PACKAGE_INCLUDE`
+variable. To minimize the container size and download time, you can select only what you need. If
+you do not use the `DCOS_PACKAGE_INCLUDE` variable, all *selected* Universe packages will be
+included. To view which packages are selected, click on the **Universe** tab in the DC/OS web
+interface.
 
     ```bash
-    sed -i -e 's/--selected/--include="marathon-lb,zeppelin"/' Makefile
+    sudo make DCOS_VERSION=1.9 DCOS_PACKAGE_INCLUDE="cassandra:1.0.25-3.0.10,marathon:1.4.2" local-universe
     ```
 
-4.  Build `mesosphere/universe` image and compress it to the `local-universe.tar.gz` file:
-
-    ```bash
-    sudo make local-universe
-    ```
-
-5.  Perform all of the steps as described in [Installing the default Universe packages][5] section, except step 27. Replace the command in step 27 with the following.
+4.  Perform all of the steps as described in [Installing the default Universe packages][5] section, except step 27. Replace the command in step 27 with the following.
 
     ```bash
     dcos package repo add local-universe http://master.mesos:8082/repo

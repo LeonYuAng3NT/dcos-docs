@@ -5,7 +5,7 @@ menu_order: 000
 
 # Hardware Prerequisites
 
-You must have a single bootstrap node, Mesos master nodes, and Mesos agent nodes.
+You must have a single bootstrap node, an odd number of Mesos master nodes, and any number Mesos of agent nodes.
 
 ## Bootstrap node
 
@@ -21,6 +21,8 @@ You must have a single bootstrap node, Mesos master nodes, and Mesos agent nodes
 The cluster nodes are designated Mesos masters and agents during installation.
 
 ### Master nodes
+
+You must have an odd number of master nodes.
 
 Here are the master node hardware requirements.
 
@@ -88,7 +90,9 @@ Here are the agent node hardware requirements.
     ```bash
     sudo systemctl stop firewalld && sudo systemctl disable firewalld
     ```
-*   DC/OS is installed to `/opt/mesosphere`. Make sure that `/opt/mesosphere` exists on a partition that is not on an LVM Logical Volume or shared storage.
+
+*   DC/OS is installed to `/opt/mesosphere`. `/opt/mesosphere` must be on the same mountpoint as `/`.  This is required because DC/OS installs systemd unit files under `/opt/mesosphere`. All systemd units must be available for enumeration during the initializing of the initial ramdisk at boot. If `/opt` is on a different partition or volume, systemd will fail to discover these units during the initialization of the ramdisk and DC/OS will not automatically restart upon reboot.
+
 *   The Mesos master and agent persistent information of the cluster is stored in the `/var/lib/mesos` directory.
     
     **Important:** Do not remotely mount `/var/lib/mesos` or the Docker storage directory (by default `/var/lib/docker`).
@@ -108,6 +112,8 @@ Here are the agent node hardware requirements.
 High speed internet access is recommended for DC/OS installation. A minimum 10 MBit per second is required for DC/OS services. The installation of some DC/OS services will fail if the artifact download time exceeds the value of MESOS_EXECUTOR_REGISTRATION_TIMEOUT within the file `/opt/mesosphere/etc/mesos-slave-common`. The default value for MESOS_EXECUTOR_REGISTRATION_TIMEOUT is 10 minutes.
 
 # Software Prerequisites
+
+**Tip:** Refer to [this shell script](https://raw.githubusercontent.com/dcos/dcos/1.8.9/cloud_images/centos7/install_prereqs.sh) for an example of how to install the software requirements for DC/OS masters and agents on a CentOS 7 host.
 
 ## All Nodes
 
@@ -232,6 +238,6 @@ You must set the `LC_ALL` and `LANG` environment variables to `en_US.utf-8`.
 
 [1]: /docs/1.8/administration/installing/custom/cli/
 [2]: /docs/1.8/administration/installing/custom/system-requirements/install-docker-centos/
-[3]: https://downloads.dcos.io/dcos/stable/dcos_generate_config.sh
+[3]: https://downloads.dcos.io/dcos/stable/1.8.9/dcos_generate_config.sh
 [4]: /docs/1.8/administration/installing/custom/gui/
 [5]: /docs/1.8/administration/installing/custom/advanced/

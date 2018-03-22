@@ -10,6 +10,8 @@ You can configure a DC/OS cluster on Google Compute Engine (GCE) by using these 
 - [Install the DC/OS GCE scripts](#install)
 - [Configure parameters](#configure)
 
+**Important:** Upgrades are not supported with this installation method.
+
 ## Prerequisites
 - Google Cloud Console account
 
@@ -145,10 +147,10 @@ You must create the RSA public/private keypairs to allow passwordless logins via
     cd dcos-gce
     ```
 
-1.  Review and customize the `dcos_gce/group_vars/all`. You should review `project`, `subnet`, `login_name`, `bootstrap_public_ip`, and `zone`. To install DC/OS v1.8.4 stable, ensure that:
+1.  Review and customize the `dcos_gce/group_vars/all`. You should review `project`, `subnet`, `login_name`, `bootstrap_public_ip`, and `zone`. To install DC/OS 1.8 stable, ensure that:
 
     ```
-    dcos_installer_download_path = "https://downloads.dcos.io/dcos/stable/{{ dcos_installer_filename }}?_ga=1.106931012.674486911.1475259096"
+    dcos_installer_download_path = "https://downloads.dcos.io/dcos/stable/1.8.9/{{ dcos_installer_filename }}?_ga=1.106931012.674486911.1475259096"
     ```
 
 1.  Insert following into `~/.ansible.cfg` to stop host key checking.
@@ -271,7 +273,7 @@ Do not change this parameter. It is required by the Google Cloud SDK.
 Specify the filename for the DC/OS installer. Default `dcos_generate_config.sh`.
 
 ### dcos_installer_download_path
-Specify the location of where the dcos installer is available from [dcos.io](https://dcos.io). Default: `https://downloads.dcos.io/dcos/stable/{{ dcos_installer_filename }}`. The value of `{{ dcos_installer_file }}` is described above.
+Specify the location of where the dcos installer is available from [dcos.io](https://dcos.io). Default: `https://downloads.dcos.io/dcos/stable/1.8.9/{{ dcos_installer_filename }}`. The value of `{{ dcos_installer_file }}` is described above.
 
 ### home_directory
 Specify the home directory for your logins. Default: `/home/{{ login_name }}`. The value of `{{ login_name }}` is described above.

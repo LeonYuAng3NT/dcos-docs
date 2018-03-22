@@ -6,7 +6,7 @@ menu_order: 700
 
 You can convert agent nodes to public or private for an existing DC/OS cluster. 
 
-Agent nodes are designated as [public](/docs/1.9/overview/concepts/#public) or [private](/docs/1.9/overview/concepts/#private) during installation. By default, they are designated as private during [GUI][1] or [CLI][2] installation.
+Agent nodes are designated as [public](/docs/1.9/overview/concepts/#public-agent-node) or [private](/docs/1.9/overview/concepts/#private) during installation. By default, they are designated as private during [GUI][1] or [CLI][2] installation.
 
 ### Prerequisites:
 These steps must be performed on a machine that is configured as a DC/OS node. Any tasks that are running on the node will be terminated during this conversion process.
@@ -36,7 +36,8 @@ You can determine the node type by running this command from the DC/OS CLI.
 1.  Uninstall DC/OS on the agent node.
 
     ```bash
-    sudo -i /opt/mesosphere/bin/pkgpanda uninstall
+    sudo /opt/mesosphere/bin/dcos-shell
+    sudo -i pkgpanda uninstall
     sudo systemctl stop dcos-mesos-slave
     sudo systemctl disable dcos-mesos-slave
     ```
@@ -51,7 +52,7 @@ You can determine the node type by running this command from the DC/OS CLI.
 
     ```bash
     sudo reboot
-    ```        
+    ```
 
 ### Install DC/OS and convert agent node
 Copy the archived DC/OS installer file (`dcos-install.tar`) to the node that that is being converted. This archive is created during the GUI or CLI [installation](/docs/1.9/installing/custom/gui/#backup) method.
